@@ -1,0 +1,25 @@
+# ЛР3, крок 1 (варіант 5, k3d): один вузол server і два вузли agent.
+# На server заборонено розміщення робочих подів (taint), інфраструктурні поди
+# (база, моніторинг) підуть туди через nodeSelector role=infra і tolerations.
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: studies
+servers: 1
+agents: 2
+image: rancher/k3s:v1.31.5-k3s1     # >= 1.30: потрібно для lifecycle.preStop.sleep
+ports:
+  - port: 8080:30080                 # NodePort сервісу web  -> localhost:8080
+    nodeFilters: [loadbalancer]
+  - port: 9090:30090                 # NodePort Prometheus   -> localhost:9090
+    nodeFilters: [loadbalancer]
+options:
+  k3s:
+    extraArgs:
+      - arg: --node-taint=node-role.kubernetes.io/control-plane=true:NoSchedule
+        nodeFilters: [server:0]
+      # Traefik і servicelb у цій роботі не потрібні (Д3 не в нашому варіанті); економимо памʼять
+      - arg: --disable=traefik
+        nodeFilters: [server:0]
+      - arg: --disable=servicelb
+        nodeFilters: [server:0]

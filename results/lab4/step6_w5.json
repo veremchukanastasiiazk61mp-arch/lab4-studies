@@ -1,0 +1,685 @@
+{
+ "W": 5,
+ "tasks": 2145,
+ "drained": true,
+ "X": 34.03448275862069,
+ "std": 3.022704413904983,
+ "window_s": 30.0,
+ "per_second": [
+  32,
+  35,
+  37,
+  36,
+  35,
+  37,
+  35,
+  35,
+  31,
+  33,
+  34,
+  33,
+  28,
+  34,
+  37,
+  39,
+  33,
+  36,
+  32,
+  25,
+  33,
+  32,
+  35,
+  39,
+  34,
+  35,
+  34,
+  38,
+  30
+ ],
+ "claim_p99_s": 0.128,
+ "xact_per_s": 157.30264689593184,
+ "db_cpu_cores": 0.19060520989177265,
+ "empty_claims": 1084.0,
+ "samples": [
+  {
+   "t": 1793477065.672216,
+   "queued": 2145,
+   "running": 0,
+   "done": 0,
+   "failed": 0,
+   "xact": 5525488,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477066.764399,
+   "queued": 2145,
+   "running": 0,
+   "done": 0,
+   "failed": 0,
+   "xact": 5525491,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477067.769846,
+   "queued": 2145,
+   "running": 0,
+   "done": 0,
+   "failed": 0,
+   "xact": 5525550,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477068.753155,
+   "queued": 2145,
+   "running": 0,
+   "done": 0,
+   "failed": 0,
+   "xact": 5525555,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477069.889029,
+   "queued": 2121,
+   "running": 5,
+   "done": 19,
+   "failed": 0,
+   "xact": 5525609,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477070.992282,
+   "queued": 2098,
+   "running": 5,
+   "done": 42,
+   "failed": 0,
+   "xact": 5525727,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477071.758913,
+   "queued": 2084,
+   "running": 5,
+   "done": 56,
+   "failed": 0,
+   "xact": 5525885,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477072.861277,
+   "queued": 2053,
+   "running": 4,
+   "done": 88,
+   "failed": 0,
+   "xact": 5526027,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477073.764626,
+   "queued": 2026,
+   "running": 4,
+   "done": 115,
+   "failed": 0,
+   "xact": 5526186,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477074.807524,
+   "queued": 1995,
+   "running": 5,
+   "done": 145,
+   "failed": 0,
+   "xact": 5526344,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477075.754701,
+   "queued": 1967,
+   "running": 5,
+   "done": 173,
+   "failed": 0,
+   "xact": 5526471,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477076.78239,
+   "queued": 1938,
+   "running": 5,
+   "done": 202,
+   "failed": 0,
+   "xact": 5526597,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477077.855641,
+   "queued": 1909,
+   "running": 5,
+   "done": 231,
+   "failed": 0,
+   "xact": 5526723,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477078.777434,
+   "queued": 1880,
+   "running": 4,
+   "done": 261,
+   "failed": 0,
+   "xact": 5526863,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477079.82275,
+   "queued": 1849,
+   "running": 5,
+   "done": 291,
+   "failed": 0,
+   "xact": 5526986,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477080.862221,
+   "queued": 1819,
+   "running": 4,
+   "done": 322,
+   "failed": 0,
+   "xact": 5527125,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477081.777101,
+   "queued": 1788,
+   "running": 5,
+   "done": 352,
+   "failed": 0,
+   "xact": 5527246,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477082.781603,
+   "queued": 1753,
+   "running": 5,
+   "done": 387,
+   "failed": 0,
+   "xact": 5527422,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477083.820612,
+   "queued": 1718,
+   "running": 3,
+   "done": 424,
+   "failed": 0,
+   "xact": 5527604,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477084.983709,
+   "queued": 1681,
+   "running": 5,
+   "done": 459,
+   "failed": 0,
+   "xact": 5527760,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477085.89271,
+   "queued": 1651,
+   "running": 5,
+   "done": 489,
+   "failed": 0,
+   "xact": 5527877,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477086.865222,
+   "queued": 1619,
+   "running": 5,
+   "done": 521,
+   "failed": 0,
+   "xact": 5528014,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477087.88035,
+   "queued": 1587,
+   "running": 5,
+   "done": 553,
+   "failed": 0,
+   "xact": 5528197,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477088.900655,
+   "queued": 1553,
+   "running": 5,
+   "done": 587,
+   "failed": 0,
+   "xact": 5528343,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477089.889281,
+   "queued": 1515,
+   "running": 5,
+   "done": 625,
+   "failed": 0,
+   "xact": 5528517,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477090.902662,
+   "queued": 1481,
+   "running": 5,
+   "done": 659,
+   "failed": 0,
+   "xact": 5528681,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477091.901217,
+   "queued": 1449,
+   "running": 4,
+   "done": 692,
+   "failed": 0,
+   "xact": 5528846,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477094.159205,
+   "queued": 1415,
+   "running": 3,
+   "done": 727,
+   "failed": 0,
+   "xact": 5529067,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477094.586721,
+   "queued": 1400,
+   "running": 5,
+   "done": 740,
+   "failed": 0,
+   "xact": 5529081,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477095.542103,
+   "queued": 1370,
+   "running": 5,
+   "done": 770,
+   "failed": 0,
+   "xact": 5529174,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477096.595979,
+   "queued": 1336,
+   "running": 5,
+   "done": 804,
+   "failed": 0,
+   "xact": 5529328,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477097.537056,
+   "queued": 1306,
+   "running": 5,
+   "done": 834,
+   "failed": 0,
+   "xact": 5529456,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477098.616825,
+   "queued": 1270,
+   "running": 5,
+   "done": 870,
+   "failed": 0,
+   "xact": 5529601,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477099.543648,
+   "queued": 1237,
+   "running": 5,
+   "done": 903,
+   "failed": 0,
+   "xact": 5529757,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477100.538345,
+   "queued": 1204,
+   "running": 3,
+   "done": 938,
+   "failed": 0,
+   "xact": 5529915,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477101.523657,
+   "queued": 1167,
+   "running": 5,
+   "done": 973,
+   "failed": 0,
+   "xact": 5530058,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477102.578847,
+   "queued": 1131,
+   "running": 5,
+   "done": 1009,
+   "failed": 0,
+   "xact": 5530268,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477103.537192,
+   "queued": 1097,
+   "running": 4,
+   "done": 1044,
+   "failed": 0,
+   "xact": 5530404,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477104.513413,
+   "queued": 1064,
+   "running": 4,
+   "done": 1077,
+   "failed": 0,
+   "xact": 5530552,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477105.536417,
+   "queued": 1031,
+   "running": 5,
+   "done": 1109,
+   "failed": 0,
+   "xact": 5530704,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477106.569363,
+   "queued": 996,
+   "running": 5,
+   "done": 1144,
+   "failed": 0,
+   "xact": 5530914,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477107.549541,
+   "queued": 963,
+   "running": 5,
+   "done": 1177,
+   "failed": 0,
+   "xact": 5531080,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477108.52228,
+   "queued": 929,
+   "running": 4,
+   "done": 1212,
+   "failed": 0,
+   "xact": 5531221,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477109.531908,
+   "queued": 894,
+   "running": 3,
+   "done": 1248,
+   "failed": 0,
+   "xact": 5531346,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477110.568195,
+   "queued": 856,
+   "running": 5,
+   "done": 1284,
+   "failed": 0,
+   "xact": 5531552,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477111.569028,
+   "queued": 818,
+   "running": 5,
+   "done": 1322,
+   "failed": 0,
+   "xact": 5531713,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477112.567131,
+   "queued": 783,
+   "running": 5,
+   "done": 1357,
+   "failed": 0,
+   "xact": 5531909,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477113.568009,
+   "queued": 749,
+   "running": 4,
+   "done": 1392,
+   "failed": 0,
+   "xact": 5532073,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477114.664958,
+   "queued": 712,
+   "running": 5,
+   "done": 1428,
+   "failed": 0,
+   "xact": 5532237,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477115.640482,
+   "queued": 682,
+   "running": 5,
+   "done": 1458,
+   "failed": 0,
+   "xact": 5532352,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477116.739684,
+   "queued": 643,
+   "running": 5,
+   "done": 1497,
+   "failed": 0,
+   "xact": 5532506,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477117.605707,
+   "queued": 618,
+   "running": 4,
+   "done": 1523,
+   "failed": 0,
+   "xact": 5532667,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477118.662591,
+   "queued": 586,
+   "running": 4,
+   "done": 1555,
+   "failed": 0,
+   "xact": 5532830,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477119.65235,
+   "queued": 553,
+   "running": 4,
+   "done": 1588,
+   "failed": 0,
+   "xact": 5532958,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477120.63234,
+   "queued": 517,
+   "running": 4,
+   "done": 1624,
+   "failed": 0,
+   "xact": 5533117,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477121.629822,
+   "queued": 479,
+   "running": 5,
+   "done": 1661,
+   "failed": 0,
+   "xact": 5533285,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477122.668521,
+   "queued": 442,
+   "running": 5,
+   "done": 1698,
+   "failed": 0,
+   "xact": 5533480,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477123.707691,
+   "queued": 407,
+   "running": 4,
+   "done": 1734,
+   "failed": 0,
+   "xact": 5533684,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477124.67321,
+   "queued": 371,
+   "running": 4,
+   "done": 1770,
+   "failed": 0,
+   "xact": 5533720,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477125.746079,
+   "queued": 348,
+   "running": 5,
+   "done": 1792,
+   "failed": 0,
+   "xact": 5533910,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477126.671867,
+   "queued": 317,
+   "running": 4,
+   "done": 1824,
+   "failed": 0,
+   "xact": 5534049,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477127.696774,
+   "queued": 283,
+   "running": 5,
+   "done": 1857,
+   "failed": 0,
+   "xact": 5534169,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477128.673617,
+   "queued": 248,
+   "running": 5,
+   "done": 1892,
+   "failed": 0,
+   "xact": 5534309,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477129.698092,
+   "queued": 213,
+   "running": 5,
+   "done": 1927,
+   "failed": 0,
+   "xact": 5534472,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477130.69365,
+   "queued": 177,
+   "running": 5,
+   "done": 1963,
+   "failed": 0,
+   "xact": 5534651,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477131.791094,
+   "queued": 137,
+   "running": 5,
+   "done": 2003,
+   "failed": 0,
+   "xact": 5534758,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477132.762515,
+   "queued": 103,
+   "running": 4,
+   "done": 2038,
+   "failed": 0,
+   "xact": 5535014,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477133.721483,
+   "queued": 69,
+   "running": 5,
+   "done": 2071,
+   "failed": 0,
+   "xact": 5535169,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477134.794245,
+   "queued": 36,
+   "running": 4,
+   "done": 2105,
+   "failed": 0,
+   "xact": 5535357,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477135.748783,
+   "queued": 5,
+   "running": 5,
+   "done": 2135,
+   "failed": 0,
+   "xact": 5535504,
+   "lock_waits": 0
+  },
+  {
+   "t": 1793477136.683373,
+   "queued": 0,
+   "running": 0,
+   "done": 2145,
+   "failed": 0,
+   "xact": 5535806,
+   "lock_waits": 0
+  }
+ ],
+ "t_last": 1793477135.993249
+}

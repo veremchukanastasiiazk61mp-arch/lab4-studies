@@ -1,0 +1,30 @@
+{
+ "victim": "worker-7f88cb4ccf-7ztlc",
+ "task_id": 16,
+ "before": {
+  "attempts": 1,
+  "token": 1
+ },
+ "during_stop": "done|2|2|worker-7f88cb4ccf-85gg5",
+ "after": "done|2|2|worker-7f88cb4ccf-85gg5",
+ "tries_to_catch_task": 1,
+ "pid1_signal_probe": {
+  "command": "kubectl exec worker-7f88cb4ccf-7ztlc -- kill -STOP 1",
+  "state_before": "State:\tS (sleeping)",
+  "state_after": "State:\tS (sleeping)",
+  "works": false
+ },
+ "results_for_task": 1,
+ "stopped_s": 10.348731279373169,
+ "zero_rows_log_victim": [
+  "2026-10-31 17:58:24,510 WARNING worker.db heartbeat: 0 rows updated, задача 16 токен 1 (нуль оновлених рядків: токен застарів)",
+  "2026-10-31 17:58:24,532 WARNING worker.db finish: 0 rows updated, задача 16 токен 1 (нуль оновлених рядків: токен застарів)"
+ ],
+ "requeue_log_other": [
+  "2026-10-31 17:58:19,516 INFO worker.db [requeued] задачу 16 повернуто в чергу: lease спливло"
+ ],
+ "n_dup_results_all_tasks": 0,
+ "tasks": 100,
+ "attempts_gt1": 1,
+ "failed": 0
+}

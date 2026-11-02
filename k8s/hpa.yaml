@@ -1,0 +1,24 @@
+# ЛР3, крок 11 (варіант 5): HPA за використанням CPU, ціль 70 % від requests.cpu (500m),
+# minReplicas 1, maxReplicas R = 5, вікно стабілізації зменшення 30 с.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web
+  namespace: studies
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 30

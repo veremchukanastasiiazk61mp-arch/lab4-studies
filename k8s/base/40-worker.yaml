@@ -1,0 +1,60 @@
+# ЛР4, крок 2. Пул воркерів черги задач. Поле replicas у Deployment навмисно відсутнє: кількістю воркерів керує
+# kubectl scale deployment/worker --replicas=W (скрипти scripts/lab4.py). Змінні, які міняються між кроками
+# (CLAIM_MODE, POLL_INTERVAL_MS, LEASE_SECONDS, HEARTBEAT, FAIL_RATE), задано прямо в Deployment, щоб їх можна було
+# змінити командою kubectl set env; значення нижче відповідають варіанту 5 і кроку 4 (T_poll 10 мс, L 5 с).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: studies
+spec:
+  selector:
+    matchLabels: {app: worker}
+  template:
+    metadata:
+      labels: {app: worker}
+    spec:
+      terminationGracePeriodSeconds: 30      # крок 2; воркер після SIGTERM чекає GRACE_SECONDS = 25 < 30
+      containers:
+        - name: worker
+          image: studies-worker:latest
+          imagePullPolicy: IfNotPresent      # образ завантажено командою k3d image import
+          env:
+            - {name: DB_HOST, value: db}
+            - {name: DB_PORT, value: "5432"}
+            - {name: DB_NAME, value: studies}
+            - {name: DB_USER, value: studies_app}
+            - name: DB_PASSWORD
+              valueFrom: {secretKeyRef: {name: db-credentials, key: DB_PASSWORD}}
+            - {name: WEB_URL, value: "http://web:8000"}
+            - name: WORKER_ID                  # Downward API: ідентифікатор воркера = імʼя пода
+              valueFrom: {fieldRef: {fieldPath: metadata.name}}
+            - {name: CLAIM_MODE, value: skip_locked}      # naive | for_update | skip_locked
+            - {name: POLL_INTERVAL_MS, value: "10"}       # T_poll варіанта 5
+            - {name: LEASE_SECONDS, value: "5"}           # L варіанта 5
+            - {name: HEARTBEAT, value: "true"}
+            - {name: FAIL_RATE, value: "0"}               # 0.15 лише в кроці 9
+            - {name: SLICE_SIZE, value: "256"}
+            - {name: Q_LO, value: "0.05"}                 # варіант 5
+            - {name: Q_HI, value: "0.95"}
+            - {name: HISTOGRAM_BUCKETS_MS, value: "1,2,4,8,16,32,64,128,256,512,1024"}   # Г3
+            - {name: METRICS_PORT, value: "9100"}
+            - {name: GRACE_SECONDS, value: "25"}
+            - {name: HTTP_TIMEOUT_SECONDS, value: "10"}
+            - {name: LOG_LEVEL, value: info}
+            - {name: LOG_FILE, value: /var/log/worker/worker.log}   # журнал переживає перезапуски контейнера
+            - {name: PYTHONUNBUFFERED, value: "1"}
+          ports:
+            - {name: metrics, containerPort: 9100}
+          readinessProbe:                        # лише готовність до збору метрик; liveness-проби немає навмисно:
+            httpGet: {path: /metrics, port: metrics}   # під час kill -STOP 1 (крок 5) вона перезапустила б контейнер
+            periodSeconds: 2
+            failureThreshold: 3
+          resources:
+            requests: {cpu: 250m, memory: 64Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          volumeMounts:
+            - {name: logs, mountPath: /var/log/worker}
+      volumes:
+        - name: logs
+          emptyDir: {}

@@ -1,0 +1,21 @@
+{
+ "label": "step3_naive_poll10",
+ "mode": "naive",
+ "poll_ms": 10,
+ "tasks": 300,
+ "created": 300,
+ "drained": true,
+ "duration_s": 12.955482244491577,
+ "results_rows": 372,
+ "n_dup_results": 67,
+ "D_results": 0.22333333333333333,
+ "n_dup_logs": 67,
+ "D_logs": 0.22333333333333333,
+ "tasks_seen_in_logs": 300,
+ "claim_p99_s": 0.032,
+ "claim_count": 2022.0,
+ "empty_claims": 1650.0,
+ "task_claims": 372.0,
+ "max_lock_waits": 0,
+ "failed": 0
+}

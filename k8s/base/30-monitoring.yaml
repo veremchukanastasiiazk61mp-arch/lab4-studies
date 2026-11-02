@@ -1,0 +1,234 @@
+# ЛР3, крок 5. Моніторинг на вузлі role=infra: Prometheus (збір раз на 5 с), cAdvisor через
+# kubelet, kube-state-metrics, postgres-exporter. Звичайні маніфести без Helm: менше
+# ресурсів і кожен обʼєкт видно.
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: prometheus, namespace: monitoring}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata: {name: prometheus}
+rules:
+  - apiGroups: [""]
+    resources: [nodes, nodes/proxy, nodes/metrics, pods, services, endpoints]
+    verbs: [get, list, watch]
+  - nonResourceURLs: [/metrics, /metrics/cadvisor]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: {name: prometheus}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: prometheus}
+subjects:
+  - {kind: ServiceAccount, name: prometheus, namespace: monitoring}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: {name: prometheus-config, namespace: monitoring}
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 5s
+      scrape_timeout: 4s
+      evaluation_interval: 5s
+    scrape_configs:
+      # поди web: пошук через Kubernetes API за міткою app=web; кожен под окремий ряд
+      - job_name: web
+        metrics_path: /metrics
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces: {names: [studies]}
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            regex: web
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_container_port_number]
+            regex: "8000"
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            target_label: node
+      # ЛР4: поди worker (метрики воркера на порту 9100)
+      - job_name: worker
+        metrics_path: /metrics
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces: {names: [studies]}
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            regex: worker
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_container_port_number]
+            regex: "9100"
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            target_label: node
+      # cAdvisor через kubelet (проксі API-сервера): container_cpu_cfs_* та використання CPU
+      - job_name: cadvisor
+        scheme: https
+        tls_config: {ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt}
+        authorization: {credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token}
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+          - source_labels: [__meta_kubernetes_node_name]
+            target_label: node
+        metric_relabel_configs:
+          # лишаємо тільки контейнери додатків і потрібні ряди, щоб не роздувати базу
+          - source_labels: [namespace]
+            regex: studies
+            action: keep
+      - job_name: kube-state-metrics
+        static_configs:
+          - targets: ["kube-state-metrics.monitoring.svc:8080"]
+      - job_name: postgres
+        static_configs:
+          - targets: ["postgres-exporter.monitoring.svc:9187"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: prometheus, namespace: monitoring}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector: {matchLabels: {app: prometheus}}
+  template:
+    metadata: {labels: {app: prometheus}}
+    spec:
+      serviceAccountName: prometheus
+      nodeSelector: {role: infra}
+      tolerations:
+        - {key: node-role.kubernetes.io/control-plane, operator: Exists, effect: NoSchedule}
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.55.1
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus
+            - --storage.tsdb.retention.time=3d
+          ports: [{name: http, containerPort: 9090}]
+          readinessProbe: {httpGet: {path: /-/ready, port: http}, periodSeconds: 5}
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {memory: 768Mi}
+          volumeMounts:
+            - {name: config, mountPath: /etc/prometheus}
+            - {name: data, mountPath: /prometheus}
+      volumes:
+        - {name: config, configMap: {name: prometheus-config}}
+        - {name: data, emptyDir: {}}     # дані зберігаються до видалення кластера; діаграми будують до down
+---
+apiVersion: v1
+kind: Service
+metadata: {name: prometheus, namespace: monitoring}
+spec:
+  type: NodePort
+  selector: {app: prometheus}
+  ports: [{name: http, port: 9090, targetPort: http, nodePort: 30090}]
+---
+# ---------- kube-state-metrics: kube_deployment_status_replicas_ready, HPA, поди ----------
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: kube-state-metrics, namespace: monitoring}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata: {name: kube-state-metrics}
+rules:
+  - apiGroups: [""]
+    resources: [pods, nodes, namespaces, services, endpoints, configmaps]
+    verbs: [list, watch]
+  - apiGroups: [apps]
+    resources: [deployments, replicasets, statefulsets, daemonsets]
+    verbs: [list, watch]
+  - apiGroups: [autoscaling]
+    resources: [horizontalpodautoscalers]
+    verbs: [list, watch]
+  - apiGroups: [batch]
+    resources: [jobs, cronjobs]
+    verbs: [list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: {name: kube-state-metrics}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: kube-state-metrics}
+subjects:
+  - {kind: ServiceAccount, name: kube-state-metrics, namespace: monitoring}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: kube-state-metrics, namespace: monitoring}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: kube-state-metrics}}
+  template:
+    metadata: {labels: {app: kube-state-metrics}}
+    spec:
+      serviceAccountName: kube-state-metrics
+      nodeSelector: {role: infra}
+      tolerations:
+        - {key: node-role.kubernetes.io/control-plane, operator: Exists, effect: NoSchedule}
+      containers:
+        - name: kube-state-metrics
+          image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.13.0
+          args:
+            - --resources=deployments,pods,horizontalpodautoscalers,nodes,jobs,statefulsets
+          ports: [{name: http, containerPort: 8080}]
+          readinessProbe: {httpGet: {path: /readyz, port: 8081}, periodSeconds: 5}
+          resources:
+            requests: {cpu: 20m, memory: 48Mi}
+            limits: {memory: 160Mi}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: kube-state-metrics, namespace: monitoring}
+spec:
+  selector: {app: kube-state-metrics}
+  ports: [{name: http, port: 8080, targetPort: http}]
+---
+# ---------- postgres-exporter (М2: pg_conn_count{state}) ----------
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: postgres-exporter, namespace: monitoring}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: postgres-exporter}}
+  template:
+    metadata: {labels: {app: postgres-exporter}}
+    spec:
+      nodeSelector: {role: infra}
+      tolerations:
+        - {key: node-role.kubernetes.io/control-plane, operator: Exists, effect: NoSchedule}
+      containers:
+        - name: exporter
+          image: prometheuscommunity/postgres-exporter:v0.16.0
+          args: ["--extend.query-path=/etc/postgres-exporter/queries.yaml"]
+          env:
+            - {name: DATA_SOURCE_URI, value: "db.studies.svc:5432/studies?sslmode=disable"}
+            - {name: DATA_SOURCE_USER, value: studies_app}
+            - name: DATA_SOURCE_PASS
+              valueFrom: {secretKeyRef: {name: db-credentials, key: DB_PASSWORD}}
+          ports: [{name: http, containerPort: 9187}]
+          resources:
+            requests: {cpu: 20m, memory: 32Mi}
+            limits: {memory: 128Mi}
+          volumeMounts:
+            - {name: queries, mountPath: /etc/postgres-exporter}
+      volumes:
+        - {name: queries, configMap: {name: pg-exporter-queries}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: postgres-exporter, namespace: monitoring}
+spec:
+  selector: {app: postgres-exporter}
+  ports: [{name: http, port: 9187, targetPort: http}]

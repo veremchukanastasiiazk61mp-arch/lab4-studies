@@ -1,0 +1,21 @@
+{
+ "label": "step4_skip_locked_poll1",
+ "mode": "skip_locked",
+ "poll_ms": 1,
+ "tasks": 300,
+ "created": 300,
+ "drained": true,
+ "duration_s": 10.55729365348816,
+ "results_rows": 300,
+ "n_dup_results": 0,
+ "D_results": 0.0,
+ "n_dup_logs": 0,
+ "D_logs": 0.0,
+ "tasks_seen_in_logs": 300,
+ "claim_p99_s": 0.008,
+ "claim_count": 11297.0,
+ "empty_claims": 10997.0,
+ "task_claims": 300.0,
+ "max_lock_waits": 0,
+ "failed": 0
+}

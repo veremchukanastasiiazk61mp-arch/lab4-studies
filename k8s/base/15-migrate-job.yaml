@@ -1,0 +1,35 @@
+# ЛР3, крок 3: Job міграції схеми. Чекає на базу, накочує db/init.sql (ConfigMap db-schema,
+# його створює scripts/cluster.sh з файла db/init.sql). Скрипт ідемпотентний.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+  namespace: studies
+spec:
+  backoffLimit: 6
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      nodeSelector: {role: infra}
+      tolerations:
+        - {key: node-role.kubernetes.io/control-plane, operator: Exists, effect: NoSchedule}
+      containers:
+        - name: migrate
+          image: postgres:16-alpine
+          env:
+            - {name: PGHOST, value: db}
+            - {name: PGDATABASE, valueFrom: {configMapKeyRef: {name: web-config, key: DB_NAME}}}
+            - {name: PGUSER, valueFrom: {configMapKeyRef: {name: web-config, key: DB_USER}}}
+            - {name: PGPASSWORD, valueFrom: {secretKeyRef: {name: db-credentials, key: DB_PASSWORD}}}
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -q; do echo "чекаю на базу"; sleep 2; done
+              psql -v ON_ERROR_STOP=1 -f /schema/init.sql
+          volumeMounts:
+            - {name: schema, mountPath: /schema}
+      volumes:
+        - name: schema
+          configMap: {name: db-schema}

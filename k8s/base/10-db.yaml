@@ -1,0 +1,60 @@
+# ЛР3, крок 3. PostgreSQL: StatefulSet + PVC + headless Service на вузлі role=infra.
+# Пароль приходить із Secret db-credentials (його створює scripts/cluster.sh із .env).
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: studies
+spec:
+  clusterIP: None          # headless: поду db-0 відповідає стале DNS-імʼя db-0.db
+  selector: {app: db}
+  ports:
+    - {name: pg, port: 5432, targetPort: 5432}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+  namespace: studies
+spec:
+  serviceName: db
+  replicas: 1
+  selector:
+    matchLabels: {app: db}
+  template:
+    metadata:
+      labels: {app: db}
+    spec:
+      nodeSelector: {role: infra}
+      tolerations:
+        - {key: node-role.kubernetes.io/control-plane, operator: Exists, effect: NoSchedule}
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          args: ["-c", "max_connections=100"]
+          env:
+            - {name: POSTGRES_DB, valueFrom: {configMapKeyRef: {name: web-config, key: DB_NAME}}}
+            - {name: POSTGRES_USER, valueFrom: {configMapKeyRef: {name: web-config, key: DB_USER}}}
+            - {name: POSTGRES_PASSWORD, valueFrom: {secretKeyRef: {name: db-credentials, key: DB_PASSWORD}}}
+            - {name: PGDATA, value: /var/lib/postgresql/data/pgdata}
+          ports:
+            - {name: pg, containerPort: 5432}
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "pg_isready -h 127.0.0.1 -U $POSTGRES_USER -d $POSTGRES_DB"]
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 20
+          resources:
+            requests: {cpu: 250m, memory: 192Mi}
+            limits: {memory: 768Mi}
+          volumeMounts:
+            - {name: data, mountPath: /var/lib/postgresql/data}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests: {storage: 1Gi}

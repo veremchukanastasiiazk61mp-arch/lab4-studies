@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata: {name: studies}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: monitoring}
