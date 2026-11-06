@@ -4,3 +4,7 @@ __pycache__/
 *.zip
 .rendered/
 .env.*
+.env
+.env.env
+patch_*.py
+__pycache__/
