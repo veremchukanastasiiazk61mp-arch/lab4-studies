@@ -13,9 +13,9 @@ class StudyIn(BaseModel):
 
     patient_code: str = Field(min_length=1, max_length=64)
     modality: str = Field(min_length=1, max_length=16)
-    # Правило варіанта 5: кількість зрізів більша за нуль
+
     slice_count: StrictInt = Field(gt=0, le=INT32_MAX)
-    # Правило варіанта 5: товщина зрізу від 0.5 до 10 мм
+
     slice_thickness_mm: Annotated[float, Field(strict=True, ge=0.5, le=10, allow_inf_nan=False)]
     device: str = Field(min_length=1, max_length=128)
     study_date: date
@@ -23,7 +23,7 @@ class StudyIn(BaseModel):
     @field_validator("patient_code", "modality", "device")
     @classmethod
     def _no_nul(cls, v: str) -> str:
-        # PostgreSQL не зберігає \u0000 у text: без перевірки це був би 500 із бази
+
         if "\x00" in v:
             raise ValueError("символ \\u0000 недопустимий")
         return v

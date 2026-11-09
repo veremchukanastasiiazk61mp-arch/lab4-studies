@@ -1,8 +1,4 @@
-"""Уся конфігурація береться тільки зі змінних середовища.
 
-Жодного значення за замовчуванням у коді немає: якщо змінної бракує або вона
-некоректна, процес не стартує і одразу називає всі проблемні змінні.
-"""
 import os
 import socket
 from dataclasses import dataclass
@@ -128,8 +124,7 @@ def load_settings() -> Settings:
         access_log=as_bool("ACCESS_LOG"),
         histogram_buckets_s=as_buckets_ms("HISTOGRAM_BUCKETS_MS"),
         startup_delay_s=as_nonneg_float("STARTUP_DELAY_SECONDS"),
-        # POD_NAME необовʼязкова (єдиний виняток із правила «усе обовʼязково»):
-        # за вимогою ЛР2 без неї беруть імʼя хоста контейнера.
+
         pod_name=os.environ.get("POD_NAME") or socket.gethostname(),
     )
 

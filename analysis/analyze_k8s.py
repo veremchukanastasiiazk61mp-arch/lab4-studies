@@ -1,15 +1,4 @@
-#!/usr/bin/env python3
-"""ЛР3, кроки 7–9: розрахунки і діаграми за результатами серії без автомасштабування.
 
-Читає з results/ (їх створює scripts/run_series_k8s.py):
-  <тег>step_nN.json, _seconds.csv, _host.jsonl, <тег>prom_nN.json (сирі вибірки Prometheus).
-Пише:
-  results/<тег>analysis_k8s.json   усі обчислені величини
-  results/<тег>analysis_k8s.md     таблиці для звіту
-  report/lab3/*.png                діаграми кроків 8 і 9
-Запуск з кореня проєкту:  python analysis/analyze_k8s.py [--tag rep2_]
-Потрібно: pip install matplotlib
-"""
 import argparse
 import json
 import math

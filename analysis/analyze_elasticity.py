@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-"""ЛР3, кроки 10–12 і Д6: метрики еластичності прогонів із профілем стрибка.
 
-Читає results/: step_nN.json (серія кроку 7, для X(N)), profile_fixed*, profile_hpa*, profile_hpa_init15*
-(_seconds.csv, .json, _prom.json, _info.json). Пише results/analysis_elasticity.{json,md} і report/lab3/profile_*.png.
-Запуск з кореня проєкту:  python analysis/analyze_elasticity.py
-"""
 import argparse
 import json
 import math

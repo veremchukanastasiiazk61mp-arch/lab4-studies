@@ -1,17 +1,4 @@
-#!/usr/bin/env python3
-"""ЛР2, кроки 7–11: розрахунки і діаграми за результатами серії.
 
-Читає з results/ (їх створює scripts/run_series.py):
-  <тег>manifest.json, <тег>noop.json, <тег>step_nN.json + _seconds.csv + _docker_stats.jsonl,
-  <тег>prom_nN.json (сирі вибірки Prometheus).
-Пише:
-  results/<тег>analysis.json   усі обчислені величини
-  results/<тег>analysis.md     таблиці для звіту
-  results/figures/*.png        діаграми кроків 8, 10, 11
-
-Запуск з кореня проєкту:  python analysis/analyze.py [--tag cpu025_]
-Потрібно: pip install matplotlib
-"""
 import argparse
 import csv
 import json

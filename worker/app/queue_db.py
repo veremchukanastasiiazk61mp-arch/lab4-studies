@@ -1,6 +1,4 @@
-"""Робота з чергою в PostgreSQL (ЛР4). Усі команди, що змінюють задачу, повертають рядки через RETURNING,
-тому кількість оновлених рядків дорівнює кількості повернених. З'єднання працюють в режимі autocommit;
-транзакції явні (BEGIN / COMMIT / ROLLBACK)."""
+
 import json
 import logging
 
@@ -149,9 +147,7 @@ class Queue:
 
 
 class Heartbeat:
-    """Один фоновий потік на воркер із власним постійним з'єднанням (нове з'єднання на кожну задачу коштувало б
-    дорожче за саму задачу). Поки задача в обробці (set_task), потік кожні L / 3 с виконує команду з умовою за
-    токеном; якщо вона оновила нуль рядків, задачу вже забрав інший воркер (lost)."""
+
 
     def __init__(self, s):
         import threading
@@ -210,6 +206,6 @@ class Heartbeat:
                 with self.cond:
                     if self.gen == gen0:
                         self.lost = True
-                        self.task = None   # більше не продовжуємо чужу задачу
+                        self.task = None
                 log.warning("heartbeat: 0 rows updated, задача %s токен %s (нуль оновлених рядків: токен застарів)",
                             task_id, token)

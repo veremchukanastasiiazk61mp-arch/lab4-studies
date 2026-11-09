@@ -1,17 +1,4 @@
-#!/usr/bin/env python3
-"""ЛР3, кроки 10–11: прогін із профілем «0,3·X(1) → стрибок → 0,3·X(1)» без автомасштабування і з HPA.
 
-  python scripts/run_profile_k8s.py --mode fixed                 # крок 10: R = 5 реплік без HPA
-  python scripts/run_profile_k8s.py --mode hpa                   # крок 11: HPA (ціль 70 %, вікно 30 с)
-  python scripts/run_profile_k8s.py --mode hpa --init-delay 15   # Д6: початкова ініціалізація 15 с
-
-Профіль: 30 с на рівні 0,3·X(1), 60 с на рівні стрибка, 90 с на рівні 0,3·X(1).
-Рівень стрибка = min(2,5·X(1), 0,9·X(R)). X(1) і X(R) беруться з results/step_n1.json і step_nR.json.
-
-Режим fixed: масштабує Deployment до R і чекає готовності. Режим hpa: прибирає HPA, масштабує до 1,
-створює HPA (k8s/hpa.yaml) і чекає, поки `kubectl get hpa` показує одну репліку 60 секунд поспіль.
-Перед кожним прогоном виставляє STARTUP_DELAY_SECONDS (Д6) і, якщо значення змінилось, перезапускає web.
-"""
 import argparse
 import json
 import os

@@ -1,4 +1,4 @@
-"""Юніт-тести правил валідації варіанта 5. Запуск: див. README (потрібні змінні середовища для app.config)."""
+
 import pytest
 from pydantic import ValidationError
 
@@ -59,6 +59,6 @@ def test_missing_field():
 
 @pytest.mark.parametrize("field", ["patient_code", "modality", "device"])
 def test_nul_character_rejected(field):
-    # PostgreSQL не приймає \u0000 у text; без цієї перевірки було б 500 замість 400
+
     with pytest.raises(ValidationError):
         make(**{field: "a\u0000b"})

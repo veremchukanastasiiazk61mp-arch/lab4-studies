@@ -1,6 +1,5 @@
 # ЛР3, крок 1 (варіант 5, k3d): один вузол server і два вузли agent.
-# На server заборонено розміщення робочих подів (taint), інфраструктурні поди
-# (база, моніторинг) підуть туди через nodeSelector role=infra і tolerations.
+і
 apiVersion: k3d.io/v1alpha5
 kind: Simple
 metadata:

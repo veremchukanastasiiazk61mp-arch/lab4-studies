@@ -18,9 +18,9 @@ from .schemas import StudyIn
 log = logging.getLogger("studies")
 logging.basicConfig(level=settings.log_level.upper(), format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
-POD = settings.pod_name  # імʼя екземпляра: POD_NAME, а без неї імʼя хоста контейнера
+POD = settings.pod_name
 MAX_BIGINT = 2**63 - 1
-MAX_OFFSET = 1_000_000_000  # технічна межа, щоб не віддати помилку бази назовні
+MAX_OFFSET = 1_000_000_000
 
 COLUMNS = (
     "id, patient_code, modality, slice_count, "
@@ -46,7 +46,7 @@ TASK_COLUMNS = (
     "t.id, t.record_id, t.status, t.seed, t.attempts, t.max_attempts, t.token, t.lease_until, t.worker_id, "
     "t.run_after, t.created_at, t.started_at, t.finished_at, r.result AS result"
 )
-# seed генерує сервіс; run_after = now() + delay_s (Д2): задачі зі значенням у майбутньому воркери не захоплюють
+
 SQL_TASK_INSERT = (
     "WITH ins AS (INSERT INTO tasks (record_id, seed, run_after) "
     "SELECT id, $2::integer, now() + make_interval(secs => $3::double precision) FROM studies WHERE id = $1::bigint "
@@ -129,8 +129,7 @@ async def _tasks_gauge_loop(app: FastAPI) -> None:
 async def lifespan(app: FastAPI):
     app.state.ready = False
     if settings.startup_delay_s > 0:
-        # ЛР3, Д6: початкова ініціалізація. Поки lifespan не завершив запуск, uvicorn
-        # не відкриває порт, тому startupProbe у Kubernetes бачить відмову зʼєднання.
+
         log.info("початкова ініціалізація: %s с", settings.startup_delay_s)
         await asyncio.sleep(settings.startup_delay_s)
     app.state.pool = asyncpg.create_pool(
@@ -140,7 +139,7 @@ async def lifespan(app: FastAPI):
         password=settings.db_password,
         database=settings.db_name,
         min_size=settings.db_pool_min,
-        max_size=settings.db_pool_size,  # зʼєднань понад пул немає: asyncpg не має overflow
+        max_size=settings.db_pool_size,
         timeout=settings.db_connect_timeout,
         command_timeout=settings.db_command_timeout,
         max_inactive_connection_lifetime=300,
@@ -204,7 +203,7 @@ def task_to_dict(r: asyncpg.Record) -> dict:
         return v.isoformat() if v is not None else None
 
     result = r["result"]
-    if isinstance(result, str):  # asyncpg віддає jsonb рядком, якщо кодек не налаштовано
+    if isinstance(result, str):
         result = json.loads(result)
     return {
         "id": r["id"], "record_id": r["record_id"], "status": r["status"], "seed": r["seed"],

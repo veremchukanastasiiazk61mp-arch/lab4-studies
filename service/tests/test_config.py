@@ -1,4 +1,4 @@
-"""Конфігурація ЛР2: DB_POOL_SIZE, бакети гістограми, один процес, POD_NAME."""
+
 import contextlib
 import os
 import socket
@@ -10,7 +10,7 @@ from app import config
 
 @contextlib.contextmanager
 def env(**changes):
-    """Тимчасово змінює змінні середовища; None видаляє змінну."""
+
     saved = {k: os.environ.get(k) for k in changes}
     try:
         for k, v in changes.items():
@@ -62,7 +62,7 @@ def test_pod_name_falls_back_to_hostname():
 
 
 def test_startup_delay_required_and_not_negative():
-    """ЛР3, Д6: STARTUP_DELAY_SECONDS обовʼязкова, 0 дозволено, відʼємна ні."""
+
     with env(STARTUP_DELAY_SECONDS="15"):
         assert config.load_settings().startup_delay_s == 15.0
     with env(STARTUP_DELAY_SECONDS="0"):

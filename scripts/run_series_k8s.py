@@ -1,22 +1,4 @@
-#!/usr/bin/env python3
-"""ЛР3, крок 7: серія ступінчастих прогонів без автомасштабування на N = 1..R реплік.
 
-Для кожного N:
-  - kubectl scale deployment/web --replicas=N; чекає, поки готові рівно N подів, Prometheus бачить
-    N цілей UP, а через NodePort відповідають усі N подів (за X-Pod);
-  - запускає loadgen/stepload.py (40 постійних зʼєднань, закриття після 100 запитів, сходинка 30 с);
-  - вивантажує сирі вибірки Prometheus за час прогону у results/<тег>prom_nN.json
-    і записує, на яких вузлах стояли поди.
-
-Запуск з кореня проєкту (Git Bash):
-  python scripts/run_series_k8s.py                  # усі N = 1..5
-  python scripts/run_series_k8s.py --ns 1 2         # лише частина
-  python scripts/run_series_k8s.py --tag rep2_      # повтор серії (інші імена файлів)
-  python scripts/run_series_k8s.py --step-rate 50   # приріст сходинки (за замовчуванням 50)
-
-Необовʼязково: `pip install psutil` — тоді знімається завантаження CPU і памʼяті хоста
-(це лаптоп: хост може бути вузьким місцем, як у ЛР2).
-"""
 import argparse
 import json
 import os
@@ -99,8 +81,7 @@ def scale_to(n, base, prom):
     wait(settled, f"рівно {n} готових подів web", 240)
     wait(lambda: http_ok(f"{base}/healthz"), "healthz = 200")
     wait(lambda: prom_targets_up(prom) == n, f"{n} цілей web у стані UP у Prometheus", 120)
-    # Через NodePort мають відповідати всі n подів. Кожен запит urllib іде новим зʼєднанням,
-    # а Service обирає под під час встановлення зʼєднання.
+
     seen = set()
     for _ in range(80 * n):
         try:
@@ -217,9 +198,9 @@ def main():
         finally:
             sampler.stop_flag.set()
             sampler.join(timeout=10)
-        time.sleep(10)   # дочекатись останніх скрейпів Prometheus (інтервал 5 с; cAdvisor оновлюється рідше)
+        time.sleep(10)
         samples = None
-        for attempt in range(12):   # після перевантаження Prometheus може відповісти не одразу
+        for attempt in range(12):
             try:
                 samples = prom_export.export(a.prom, t_begin - 5, time.time(),
                                              os.path.join(RES, f"{a.tag}prom_n{n}.json"), extra={"placement": placement})
@@ -238,7 +219,7 @@ def main():
         save()
         flag = "  <- ТОЧКА НЕ ДОСЯГНУТА (генератор дійшов до --max-rate)" if unreached else ""
         print(f"  N={n}: X = {res['X_rps']} ± {res['X_std_rps']} rps (сходинка {res['X_step']}){flag}", flush=True)
-        time.sleep(20)   # пауза між прогонами: черги і зʼєднання мають спорожніти
+        time.sleep(20)
 
     print("\nПідсумок серії (X(N), rps):")
     for n, r in sorted(manifest["runs"].items(), key=lambda kv: int(kv[0])):

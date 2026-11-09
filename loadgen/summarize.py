@@ -1,14 +1,4 @@
-#!/usr/bin/env python3
-"""Зводить results/*.json у таблицю шести конфігурацій і робить три розрахунки.
 
-Імена файлів, які створює series.sh:
-  open_n<інстансів>_r<рівень>_rep<k>.json      відкритий контур
-  closed_n<інстансів>_r<рівень>_c<конкурентність>_rep<k>.json
-  noop_n<інстансів>_r<рівень>.json              самоперевірка генератора
-
-  python3 summarize.py                       -> results/summary.md
-  python3 summarize.py --concurrency 1 500   -> число для закритого контуру (медіана L відкритого)
-"""
 import argparse
 import glob
 import json

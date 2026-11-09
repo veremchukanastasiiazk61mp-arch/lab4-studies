@@ -1,13 +1,4 @@
-#!/usr/bin/env python3
-"""ЛР4: таблиці і діаграми за результатами scripts/lab4.py.
 
-Читає results/lab4/*.json. Пише:
-  results/lab4/analysis_lab4.json   усі обчислені величини
-  results/lab4/analysis_lab4.md     таблиці для звіту
-  report/lab4/*.png                 діаграми кроків 6, 7, 9
-Запуск з кореня проєкту:  python analysis/analyze_lab4.py
-Потрібно: pip install matplotlib
-"""
 import json
 import math
 import os

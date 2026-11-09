@@ -1,5 +1,4 @@
-"""Конфігурація воркера тільки зі змінних середовища, без значень за замовчуванням у коді
-(як у сервісі web). Якщо змінної бракує або вона некоректна, процес не стартує."""
+
 import os
 from dataclasses import dataclass
 
@@ -30,7 +29,7 @@ class Settings:
     q_hi: float
     buckets_s: tuple[float, ...]
     metrics_port: int
-    grace_s: float          # скільки чекати завершення задачі після SIGTERM (менше за terminationGracePeriodSeconds)
+    grace_s: float
     http_timeout_s: float
     log_level: str
     log_file: str           # дублює журнал у файл на томі emptyDir: файл переживає перезапуски контейнера в поді

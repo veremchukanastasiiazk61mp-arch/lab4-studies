@@ -1,14 +1,4 @@
-#!/usr/bin/env python3
-"""ЛР4: режим створення задач. Генератор з розімкненим циклом надсилає POST /studies/{id}/tasks із заданою
-інтенсивністю для записів зі списку ідентифікаторів (зазвичай сто записів, занесених loadgen/seed.py) і записує
-ідентифікатори створених задач. Інтенсивність не залежить від швидкості відповідей: запити, що не встигли,
-накопичуються в черзі генератора, а їхнє відставання видно в полі lag_p99_ms підсумку.
 
-Приклади:
-  python loadgen/taskgen.py --url http://localhost:8080 --ids loadgen/ids.json --rate 100 --count 300 --out results/tasks_x.json
-  python loadgen/taskgen.py --url ... --ids ... --rate 20 --duration 180 --out ...
-  python loadgen/taskgen.py ... --rate 5 --count 100 --delay-min 10 --delay-max 60      # Д2: run_after через 10-60 с
-"""
 import argparse
 import http.client
 import json

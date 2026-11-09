@@ -1,4 +1,3 @@
-"""Перевірка розрахункових функцій на відомих відповідях. Запуск: python -m pytest analysis  (або python analysis/test_usl.py)."""
 import math
 import os
 import sys

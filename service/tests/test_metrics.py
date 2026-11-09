@@ -1,4 +1,4 @@
-"""Проміжний обробник метрик перевіряється напряму як ASGI-застосунок, без бази і мережі."""
+
 import asyncio
 from types import SimpleNamespace
 

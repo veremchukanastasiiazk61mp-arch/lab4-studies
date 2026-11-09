@@ -1,4 +1,4 @@
--- ЛР4, крок 4: повернення первинного ключа task_results (таблицю спершу очищають, дублікатів у ній бути не повинно).
+-- ЛР4, крок 4: повернення первинного ключа task_results 
 BEGIN;
 TRUNCATE task_results;
 DROP INDEX IF EXISTS task_results_task_idx;

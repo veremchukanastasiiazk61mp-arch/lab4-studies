@@ -6,17 +6,11 @@ from collections.abc import Generator
 
 import uvicorn
 
-from .config import settings  # при некоректній конфігурації процес падає тут із зрозумілим повідомленням
+from .config import settings
 
 
 class GracefulServer(uvicorn.Server):
-    """Коректна зупинка за SIGTERM (ЛР2, крок 3).
 
-    Стандартний uvicorn після зупинки повторно надсилає собі отриманий сигнал, і процес
-    завершується зі статусом 128+15 = 143. Тут сигнал лише запускає штатну зупинку:
-    сервер перестає приймати нові зʼєднання, дочікується запитів в обробці, lifespan
-    закриває пул зʼєднань з базою, процес повертається з main() і виходить з кодом 0.
-    """
 
     @contextlib.contextmanager
     def capture_signals(self) -> Generator[None, None, None]:
@@ -29,7 +23,7 @@ class GracefulServer(uvicorn.Server):
         finally:
             for sig, handler in previous.items():
                 signal.signal(sig, handler)
-        # навмисно без signal.raise_signal(...): див. докстрінг класу
+
 
 
 def main() -> int:

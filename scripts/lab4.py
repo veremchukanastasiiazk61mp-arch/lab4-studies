@@ -1,21 +1,4 @@
-#!/usr/bin/env python3
-"""ЛР4: експерименти з чергою задач і пулом воркерів. Усі кроки виконуються цим скриптом, кожен записує сирі
-результати в results/lab4/<крок>.json; таблиці і діаграми будує analysis/analyze_lab4.py.
 
-Запуск з кореня проєкту (Git Bash), кластер має працювати (scripts/cluster.sh up):
-  python scripts/lab4.py prep        # 100 записів для генератора, перевірка стенда
-  python scripts/lab4.py step2       # 20 задач на одному воркері: t_io, t_cpu
-  python scripts/lab4.py step3       # наївне захоплення: D для T_poll = 10 і 1 мс
-  python scripts/lab4.py step4       # SKIP LOCKED і FOR UPDATE
-  python scripts/lab4.py step5       # lease, heartbeat, fencing: kill -STOP / -CONT
-  python scripts/lab4.py step6       # X(W) для W = 1, 2, 5
-  python scripts/lab4.py step7       # закон Літтла: 0,7 і 1,3 від X(R)
-  python scripts/lab4.py step8       # SIGTERM: rollout restart під навантаженням
-  python scripts/lab4.py step9       # FAIL_RATE = 0,15 і сценарій Ф5
-  python scripts/lab4.py d2          # Д2: run_after
-Параметри часу можна зменшити для налагодження: --time-scale 0.1 (усі тривалості множаться на це число).
-Якщо kubectl з Windows не підключається: KUBECTL_CMD="docker exec -i k3d-studies-server-0 kubectl".
-"""
 import argparse
 import json
 import math
@@ -156,11 +139,7 @@ class K8s:
         out = self._exec_log(pod, f"grep -F -- {shlex.quote(pattern)} /var/log/worker/worker.log || true")
         return out.splitlines()
 
-    # Сигнали SIGSTOP/SIGCONT процесу з PID 1. Команда із завдання (kubectl exec ... -- kill -STOP 1) у цьому
-    # образі НЕ діє: ядро Linux ігнорує SIGSTOP, надісланий PID 1 зсередини його власного простору PID (процес init
-    # контейнера захищений). Тому спершу пробуємо команду із завдання і перевіряємо стан /proc/1/status; якщо вона не
-    # зупинила процес, той самий сигнал надсилається з вузла k3d (він є предком простору PID контейнера, і сигнал
-    # доходить). Результат перевірки зберігається в self.pid1_probe для звіту.
+
     pid1_probe = None
     _node_of = {}
 
@@ -550,8 +529,7 @@ def cmd_step5(a):
     victim = None
     task = None
     t_wait = time.time()
-    # Задача триває десятки мілісекунд, а kubectl/docker exec — сотні, тому ловити задачу «вчасно» неможливо:
-    # зупиняємо воркер, і лише потім дивимось, чи тримає він задачу в статусі running; якщо ні, відновлюємо і пробуємо знову.
+
     tries = 0
     while time.time() - t_wait < T(60) + 30 and task is None:
         for pod in pods:
